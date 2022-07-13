@@ -1,7 +1,8 @@
 #pragma once
 #include <array>
-#include <cmath>
 #include <iostream>
+
+#include "Core.hpp"
 
 namespace ucg {
 #define DIM2 2
@@ -11,7 +12,6 @@ namespace ucg {
 #define Y 1
 #define Z 2
 
-#define EPSILON 0.0001
 
 
 template <class dtype, size_t dim = DIM3>
@@ -25,10 +25,22 @@ class Vector {
   friend std::ostream& operator<<(std::ostream& os, const Vector<dtype, dim>& v) {
     os << "(";
     for (size_t d = 0; d < dim - 1; ++d) {
-      os << v[d] << " ,";
+      os << v[d] << ", ";
     }
     os << v[dim-1] << ")";
     return os;
+  }
+
+  friend Vector<dtype, dim> operator*(const dtype& s, const Vector<dtype, dim>& v) {
+    Vector<dtype, dim> tmp(v.value);
+    for (dtype& v : tmp.value) {
+      v *= s;
+    }
+    return tmp;
+  }
+
+  friend Vector<dtype, dim> operator*(const Vector<dtype, dim>& v, const dtype& s) {
+    return s * v;
   }
 
  public:
@@ -38,18 +50,17 @@ class Vector {
 
   Vector(dtype _x, dtype _y) : value({_x, _y}) {}
   Vector(dtype _x, dtype _y, dtype _z) : value({_x, _y, _z}) {}
-  
-  bool operator==(const Vector<dtype, dim>&);
-  bool operator!=(const Vector<dtype, dim>&);
-  bool operator<(const Vector<dtype, dim>&);
-  bool operator>(const Vector<dtype, dim>&);
+
+  bool operator==(const Vector<dtype, dim>&) const;
+  bool operator!=(const Vector<dtype, dim>&) const;
+  bool operator<(const Vector<dtype, dim>&) const;
+  bool operator>(const Vector<dtype, dim>&) const;
 
 
-  Vector<dtype, dim> operator+(const Vector<dtype, dim>&);
-  Vector<dtype, dim> operator-(const Vector<dtype, dim>&);
-  Vector<dtype, dim> operator*(const dtype&);
-  dtype& operator[](size_t);
+  Vector<dtype, dim> operator+(const Vector<dtype, dim>&) const;
+  Vector<dtype, dim> operator-(const Vector<dtype, dim>&) const;
   dtype operator[](size_t) const;
+  dtype& operator[](size_t);
 
   // magnitude
   float mag() const;
@@ -59,10 +70,6 @@ class Vector {
 
   Vector<dtype, dim> norm() const;
   void normalize();
-
-  // friend Vector<dtype, dim> cross2d(const Vector<dtype, size_t>&);
-  // friend Vector<dtype, dim> cross3d(const Vector<dtype, size_t>&);
-  // friend float dot(const Vector<dtype, size_t>&, const Vector<dtype, size_t>&);
 };
 
 typedef Vector<float, DIM2> Vector2f;
@@ -82,21 +89,21 @@ Vector3f cross3d(const Vector3f& v1, const Vector3f& v2);
 // }
 
 template<class dtype, size_t dim>
-inline bool Vector<dtype, dim>::operator==(const Vector<dtype, dim>& other) {
+inline bool Vector<dtype, dim>::operator==(const Vector<dtype, dim>& other) const{
   for (size_t d = 0; d < dim; ++d) {
-    if (fabs(value[d] - other[d]) >= EPSILON)
+    if (!isEqual(value[d], other[d]))
       return false;
   }
   return true;
 }
 
 template<class dtype, size_t dim>
-inline bool Vector<dtype, dim>::operator!=(const Vector<dtype, dim>& other) {
+inline bool Vector<dtype, dim>::operator!=(const Vector<dtype, dim>& other) const {
   return !(*this == other);
 }
 
 template<class dtype, size_t dim>
-inline bool Vector<dtype, dim>::operator<(const Vector<dtype, dim>& other) {
+inline bool Vector<dtype, dim>::operator<(const Vector<dtype, dim>& other) const {
   for (size_t d = 0; d < dim; ++d) {
     if (*this[d] < other[d]) {
       return true;
@@ -108,7 +115,7 @@ inline bool Vector<dtype, dim>::operator<(const Vector<dtype, dim>& other) {
 }
 
 template<class dtype, size_t dim>
-inline bool Vector<dtype, dim>::operator>(const Vector<dtype, dim>& other) {
+inline bool Vector<dtype, dim>::operator>(const Vector<dtype, dim>& other) const {
   if (*this == other)
     return false;
 
@@ -116,26 +123,17 @@ inline bool Vector<dtype, dim>::operator>(const Vector<dtype, dim>& other) {
 }
 
 template<class dtype, size_t dim>
-inline Vector<dtype, dim> Vector<dtype, dim>::operator+(const Vector<dtype, dim>& other) {
-  std::array<dtype, dim> tmp(this->value);
-  for (size_t d = 0; d < dim; ++d) {
-    tmp += other[d];
-  }
-  return tmp;
-}
-
-template<class dtype, size_t dim>
-inline Vector<dtype, dim> Vector<dtype, dim>::operator-(const Vector<dtype, dim>& other) {
-  return *this + (-1*other);
-}
-
-template<class dtype, size_t dim>
-inline Vector<dtype, dim> Vector<dtype, dim>::operator*(const dtype& scalar) {
+inline Vector<dtype, dim> Vector<dtype, dim>::operator+(const Vector<dtype, dim>& other) const {
   Vector<dtype, dim> tmp(this->value);
-  for (dtype& v : tmp.value) {
-    v *= scalar;
+  for (size_t d = 0; d < dim; ++d) {
+    tmp[d] += other[d];
   }
   return tmp;
+}
+
+template<class dtype, size_t dim>
+inline Vector<dtype, dim> Vector<dtype, dim>::operator-(const Vector<dtype, dim>& other) const {
+  return *this + (other*-1);
 }
 
 template<class dtype, size_t dim>

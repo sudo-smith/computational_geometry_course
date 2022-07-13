@@ -1,7 +1,15 @@
-#pragman once
+#pragma once
+#include "Core.hpp"
+#include "Point.hpp"
 
-namespace ugc {
+namespace ucg {
 
-double areaTriangle2d();
+/**
+ * @brief Returns the area of a triangle defined by 3 points.
+ * 
+ * @return float 
+ */
+float areaTriangle2d(const Point2&, const Point2&, const Point2&);
 
-}  // namespace ugc
+RELATIVE_POS orientation2d(const Point2&, const Point2&, const Point2&);
+}  // namespace ucg
