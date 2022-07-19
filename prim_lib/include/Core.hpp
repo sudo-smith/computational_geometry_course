@@ -5,14 +5,14 @@
 #define EPSILON 0.00001
 
 namespace ucg {
-enum class RELATIVE_POS {
-  LEFT,
-  RIGHT,
-  BEHIND,
-  BEYOND,
-  BETWEEN,
-  ORIGIN,
-  DESTINATION,
+enum RELATIVE_POS {
+  LEFT = 2 >> 1,
+  RIGHT = 2 << 0,
+  BEHIND = 2 << 1,
+  BEYOND = 2 << 2,
+  BETWEEN = 2 << 3,
+  ORIGIN = 2 << 4,
+  DESTINATION = 2 << 5
 };
 
 constexpr const char* RELATIVE_POS_TO_STR(RELATIVE_POS p) noexcept {

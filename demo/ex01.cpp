@@ -2,6 +2,7 @@
 #include "GeoUtils.hpp"
 #include "Point.hpp"
 #include "Vector.hpp"
+#include "Intersection.hpp"
 
 
 #define OK 0
@@ -20,7 +21,9 @@ STATUS testVector() {
     return OK;
 }
 
-STATUS ex_01_10() {
+STATUS sec10() {
+    std::cout << "=============\n";
+    std::cout << "Section 10\n";
     std::cout << "=============\n";
     Point2 a(5, 3);
     Point2 b(2, 8);
@@ -45,12 +48,45 @@ STATUS ex_01_10() {
 }
 
 
+STATUS sec13() {
+    std::cout << "\n\n=============\n";
+    std::cout << "Section 13\n";
+    std::cout << "=============\n";
+
+    auto print_intersection = [](const LineSegment2& l1, const LineSegment2& l2) {
+        std::cout << "Line 1: " << l1 << std::endl;
+        std::cout << "Line 2: " << l2 << std::endl;
+
+        std::cout << "Line 1 " << (Intersection(l1, l2) ? "INTERSECTS" : "DOES NOT INTERSECT")
+                << " Line2" << std::endl;
+
+        std::cout << "\n";
+    };
+
+    print_intersection(LineSegment2(Point2(-1, 0), Point2(1, 0)),
+                       LineSegment2(Point2(0, -1), Point2(0, 1)));
+
+    print_intersection(LineSegment2(Point2(0, 0), Point2(1, 0)),
+                       LineSegment2(Point2(0, 0), Point2(0, 1)));
+
+    print_intersection(LineSegment2(Point2(0, 1), Point2(1, 1)),
+                       LineSegment2(Point2(0, 0), Point2(0, 0.5)));
+
+    print_intersection(LineSegment2(Point2(0, 0), Point2(0, 1)),
+                       LineSegment2(Point2(-1, 2), Point2(1, 2)));
+
+    return OK;
+}
+
+
 }  // namespace ucg
 
 STATUS main() {
     if (ucg::testVector())
         return ERROR;
-    if (ucg::ex_01_10())
+    if (ucg::sec10())
+        return ERROR;
+    if (ucg::sec13())
         return ERROR;
     return OK;
 }

@@ -1,4 +1,5 @@
 add_library(prim_lib
+            Intersection.cpp
             GeoUtils.cpp
             Vector.cpp)
 

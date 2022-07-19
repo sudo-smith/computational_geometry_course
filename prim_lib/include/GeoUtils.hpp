@@ -1,5 +1,6 @@
 #pragma once
 #include "Core.hpp"
+#include "LineSegment.hpp"
 #include "Point.hpp"
 
 namespace ucg {
@@ -12,4 +13,5 @@ namespace ucg {
 float areaTriangle2d(const Point2&, const Point2&, const Point2&);
 
 RELATIVE_POS orientation2d(const Point2&, const Point2&, const Point2&);
+RELATIVE_POS orientation2d(const LineSegment2&, const Point2&);
 }  // namespace ucg
