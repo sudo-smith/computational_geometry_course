@@ -50,17 +50,21 @@ STATUS sec10() {
 
 STATUS sec13() {
     std::cout << "\n\n=============\n";
-    std::cout << "Section 13\n";
+    std::cout << "Section 13/14\n";
     std::cout << "=============\n";
 
     auto print_intersection = [](const LineSegment2& l1, const LineSegment2& l2) {
         std::cout << "Line 1: " << l1 << std::endl;
         std::cout << "Line 2: " << l2 << std::endl;
 
-        std::cout << "Line 1 " << (Intersection(l1, l2) ? "INTERSECTS" : "DOES NOT INTERSECT")
-                << " Line2" << std::endl;
+        Point2 intersectionPoint;
+        bool intersects = Intersection(l1, l2, intersectionPoint);
+        std::cout << "Line 1 " << (intersects ? "INTERSECTS" : "DOES NOT INTERSECT") << " Line2";
+        if (intersects) {
+            std::cout << " at Point: " << intersectionPoint;
+        }
 
-        std::cout << "\n";
+        std::cout << "\n" << std::endl;
     };
 
     print_intersection(LineSegment2(Point2(-1, 0), Point2(1, 0)),
@@ -74,6 +78,9 @@ STATUS sec13() {
 
     print_intersection(LineSegment2(Point2(0, 0), Point2(0, 1)),
                        LineSegment2(Point2(-1, 2), Point2(1, 2)));
+
+    print_intersection(LineSegment2(Point2(0, 0), Point2(0, 1)),
+                       LineSegment2(Point2(0, -1), Point2(0, 2)));
 
     return OK;
 }
